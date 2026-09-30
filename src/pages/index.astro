@@ -1,0 +1,228 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Mark from '../components/Mark.astro';
+import Wordmark from '../components/Wordmark.astro';
+import { site, hero, manifesto, projects, strip, process, services, about, contact } from '../data/site';
+
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<Layout>
+  <!-- preloader -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <Mark class="preloader__mark" />
+    <div class="preloader__marquee">
+      <div class="preloader__track">
+        {Array.from({ length: 12 }).map(() => <span>{`${site.name}${site.nameAccent}  ·  Portfolio ${site.year}  ·  `}</span>)}
+      </div>
+    </div>
+    <div class="preloader__counter"><span id="preloader-count">0</span><em>%</em></div>
+    <div class="preloader__curtain"></div>
+  </div>
+
+  <!-- hero -->
+  <section class="hero" id="top">
+    <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero__inner">
+      <h1 class="hero__title">
+        <span class="sr-only">{site.name}{site.nameAccent}, {site.description}</span>
+        <span class="mask hero__line--grotesk" aria-hidden="true"><span class="line">{hero.top}</span></span>
+        <span class="mask hero__line--serif" aria-hidden="true"><span class="line">{hero.bottom}</span></span>
+      </h1>
+      <div class="hero__aside">
+        <p class="hero__desc" data-intro>{hero.intro}</p>
+        <ul class="hero__index">
+          {projects.slice(0, 3).map((p, i) => (
+            <li data-intro><a href={`#work`}><i>{pad(i + 1)}</i>{p.name}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee">
+        {Array.from({ length: 8 }).map(() => <span><Wordmark /></span>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- manifesto -->
+  <section class="split manifesto">
+    <div class="manifesto__rail">
+      <div class="manifesto__sticky">
+      <p class="split__label">{manifesto.label}</p>
+      <div class="manifesto__stats">
+        {manifesto.stats.map((s) => (
+          <div class="manifesto__stat"><strong>{s.value}</strong><span>{s.text}</span></div>
+        ))}
+      </div>
+      </div>
+    </div>
+    <div>
+      <p class="manifesto__text" id="manifesto-text">
+        {manifesto.statement.split(' ').map((w) => <span class="w">{w}</span>)}
+      </p>
+      <p class="manifesto__sub" data-reveal>{manifesto.sub}</p>
+    </div>
+  </section>
+
+  <!-- work strip -->
+  <section class="strip" id="work">
+    <div class="strip__pin" id="strip-pin">
+      <header class="strip__head">
+        <p class="strip__eyebrow"><span>{strip.eyebrow[0]}</span><span>{strip.eyebrow[1]}</span></p>
+        <h2 class="strip__title">{strip.titleTop}<span class="serif">{strip.titleBottom}</span></h2>
+        <div class="strip__intro"><p>{strip.intro}</p><span class="round" aria-hidden="true">↘</span></div>
+      </header>
+      <div class="strip__viewport">
+        <div class="strip__rail" id="strip-rail">
+          {projects.map((p, i) => (
+            <a class={`strip-card strip-card--${p.shape}`} href="#" data-badge style={`--c1:${p.tone[0]};--c2:${p.tone[1]}`}>
+              <div class="strip-card__float">
+                <figure class="strip-card__media">
+                  {p.video ? (
+                    <video src={p.video} muted loop playsinline autoplay preload="metadata"></video>
+                  ) : p.image ? (
+                    <img src={p.image} alt="" loading="lazy" />
+                  ) : (
+                    <div class="strip-card__ph">{p.name}</div>
+                  )}
+                  <span class="strip-card__open">View project <i>↗</i></span>
+                </figure>
+                <div class="strip-card__meta">
+                  <p class="strip-card__name"><span>{pad(i + 1)}</span>{p.name}</p>
+                  <p class="strip-card__tag">{p.tag} · {p.year}</p>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+      <p class="strip__progress" aria-hidden="true"><span id="strip-count">01</span><span>/</span><span>{pad(projects.length)}</span></p>
+    </div>
+    <footer class="strip__foot">
+      <p>{strip.foot}</p>
+      <a class="more" href={strip.more.href}>{strip.more.label} <sup>{strip.more.count}</sup></a>
+    </footer>
+  </section>
+
+  <!-- process -->
+  <section class="process">
+    <div class="process__head">
+      <div class="process__head-top">
+        <p class="eyebrow"><span>{process.eyebrow[0]}</span><span>{process.eyebrow[1]}</span></p>
+        <p class="process__promise" data-reveal>{process.promise}</p>
+      </div>
+      <h2 class="process__title">
+        <span class="mask process__title-serif"><span class="line">{process.titleSerif}</span></span>
+        <span class="mask process__title-main"><span class="line">{process.titleMain}</span></span>
+      </h2>
+      <div class="process__head-bottom">
+        <p class="process__sub"><span>{process.subPlain}</span> <em>{process.subAccent}</em></p>
+        <p class="process__scroll">Scroll <span aria-hidden="true">↓</span></p>
+      </div>
+      <ol class="process__legend">
+        {process.steps.map((s) => <li data-reveal><span>{s.num}</span>{s.name}</li>)}
+      </ol>
+    </div>
+    <div class="process__bar" aria-hidden="true"><span id="process-bar"></span></div>
+    <div class="process__cards" id="process-cards">
+      {process.steps.map((s, i) => (
+        <article class="process-card" data-tone={s.tone} data-side={i % 2 ? 'right' : 'left'}>
+          <div class="process-card__inner">
+            <p class="process-card__index">
+              <span class="process-card__num">{s.num}</span>
+              <span class="process-card__phase">{s.phase}</span>
+            </p>
+            <div class="process-card__body">
+              <h3 class="process-card__name">{s.name}</h3>
+              <p class="process-card__text">{s.text}</p>
+              <p class="process-card__meta">{s.meta}</p>
+            </div>
+            <span class="process-card__ghost" aria-hidden="true">{s.num}</span>
+          </div>
+          <span class="process-card__shade" aria-hidden="true"></span>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- services -->
+  <section class="services" id="services">
+    <div>
+      <p class="services__label">{services.label}</p>
+      <ul class="services__list">
+        {services.items.map((s) => (
+          <li class="services__item">
+            <a class="services__link" href="#contact">
+              <span class="services__name">{s.name}</span>
+              <span class="services__meta">{s.meta}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- about -->
+  <section class="split about" id="about">
+    <div><p class="split__label">{about.label}</p></div>
+    <div>
+      <h2 class="about__title" data-reveal>{about.title}</h2>
+      <p class="about__lead" data-reveal>{about.lead}</p>
+    </div>
+  </section>
+
+  <!-- contact -->
+  <section class="contact" id="contact">
+    <div class="contact__grid">
+      <div>
+        <p class="contact__avail"><span class="contact__dot"></span>{contact.avail}</p>
+        <p class="contact__hook"><span class="mask"><span class="line">{contact.hook}</span></span></p>
+        <a class="contact__mail" href={`mailto:${site.email}`}><span class="mask"><span class="line">{site.email}</span></span></a>
+        <p class="contact__sub">{contact.sub}</p>
+      </div>
+
+      <form class="cform" id="cform" novalidate>
+        <div class="cform__head">
+          <p class="cform__count"><span id="cform-step">01</span> <em>/ 03</em></p>
+          <p class="cform__steplabel" id="cform-label">Who are you?</p>
+        </div>
+        <div class="cform__steps">
+          <fieldset class="cform__step is-active" data-label="Who are you?">
+            <legend class="sr-only">Your details</legend>
+            <div class="cform__field"><label for="f-name">Full name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
+            <div class="cform__field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+          </fieldset>
+          <fieldset class="cform__step" data-label="What's it about?">
+            <legend class="sr-only">Topic and budget</legend>
+            <div>
+              <p class="cform__grouplabel">It's about…</p>
+              <div class="cform__pills">
+                {contact.kinds.map((k, i) => <label class="choice"><input type="radio" name="kind" value={k} checked={i === 0} /><span>{k}</span></label>)}
+              </div>
+            </div>
+            <div>
+              <p class="cform__grouplabel">Budget <em>· optional</em></p>
+              <div class="cform__pills">
+                {contact.budgets.map((b) => <label class="choice"><input type="radio" name="budget" value={b} /><span>{b}</span></label>)}
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="cform__step" data-label="Tell me more">
+            <legend class="sr-only">Your message</legend>
+            <div class="cform__field"><label for="f-msg">Your project in a few lines</label><textarea id="f-msg" name="message" rows="4" required></textarea></div>
+          </fieldset>
+        </div>
+        <div class="cform__nav">
+          <button class="cform__back" type="button" hidden>Back</button>
+          <button class="pill cform__submit" type="submit"><span id="cform-next">Next</span> <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="cform__progress"><span id="cform-progress"></span></div>
+        <p class="cform__note">{contact.note}</p>
+        <div class="cform__done" role="status">
+          <h3>Got it.</h3>
+          <p>Message sent. I'll get back to you shortly.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</Layout>

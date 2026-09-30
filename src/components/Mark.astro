@@ -1,0 +1,10 @@
+---
+// Original geometric monogram. Replace the polygon with your own mark.
+// The same outline is extruded in 3D in src/scripts/mark3d.ts (MARK_POINTS).
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<svg class={cls} viewBox="0 0 100 92" fill="currentColor" aria-hidden="true">
+  <polygon points="0,0 34,0 50,46 66,0 100,0 64,92 36,92" />
+  <polygon points="76,62 100,62 100,92 70,92" opacity="0.9" />
+</svg>

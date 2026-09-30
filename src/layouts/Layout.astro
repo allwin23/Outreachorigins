@@ -1,0 +1,103 @@
+---
+import '../styles/global.css';
+import Mark from '../components/Mark.astro';
+import Wordmark from '../components/Wordmark.astro';
+import { site } from '../data/site';
+
+interface Props { title?: string; description?: string }
+const { title = site.title, description = site.description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0e0e0d" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=zodiak@400,401,700,701&f[]=general-sans@400,500,600,700&display=swap"
+    />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+      <a class="brand" href="/" aria-label={`${site.name}${site.nameAccent} — home`}>
+        <Mark class="brand__mark" />
+        <span class="brand__name"><Wordmark /></span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        {site.nav.map((l) => <a href={l.href}>{l.label}</a>)}
+      </nav>
+      <a class="pill nav__cta" href={site.cta.href}><span class="pill__dot"></span>{site.cta.label}</a>
+      <button class="nav__burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav">
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <div class="mnav" id="mnav">
+      <p class="mnav__label">(Menu)</p>
+      <nav class="mnav__links" aria-label="Mobile">
+        {[...site.nav, site.cta].map((l, i) => (
+          <a href={l.href}><i>{String(i + 1).padStart(2, '0')}</i>{l.label}</a>
+        ))}
+      </nav>
+      <p class="mnav__foot">
+        <span><Wordmark /> · Independent web studio</span>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+    </div>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <Mark />
+          <p>Independent web studio.<br />Interface design, motion<br />&amp; front-end, made to measure.</p>
+        </div>
+        <nav class="footer__col" aria-label="Footer">
+          <p class="footer__col-title">Menu</p>
+          {[...site.nav, { label: 'Contact', href: site.cta.href }].map((l) => <a href={l.href}>{l.label}</a>)}
+        </nav>
+        <nav class="footer__col" aria-label="Social">
+          <p class="footer__col-title">Social</p>
+          {site.socials.map((s) => <a href={s.href}>{s.label}</a>)}
+        </nav>
+        <div class="footer__col">
+          <p class="footer__col-title">Contact</p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <p>{site.location}</p>
+        </div>
+      </div>
+      <div class="footer__meta">
+        <p>©{site.year} {site.name}{site.nameAccent}</p>
+        <nav class="footer__legal" aria-label="Legal">
+          <a href="#">Legal notice</a>
+          <a href="#">Privacy policy</a>
+        </nav>
+        <p>All rights reserved</p>
+      </div>
+      <div class="footer__wordmark" aria-hidden="true">
+        <Mark class="footer__logo fw-piece" />
+        <span class="footer__giant">
+          {site.name.split('').map((c) => <span class="fw-piece">{c}</span>)}
+          <em>{site.nameAccent.split('').map((c) => <span class="fw-piece">{c}</span>)}</em>
+        </span>
+      </div>
+    </footer>
+
+    <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span></div>
+    <div class="cursor-ring" aria-hidden="true"><span class="cursor-ring__in"></span></div>
+    <div class="cursor-badge" aria-hidden="true"><span class="cursor-badge__in">View</span></div>
+
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>
