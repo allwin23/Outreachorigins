@@ -226,15 +226,17 @@ $$('[data-reveal]').forEach((el) =>
 $$('.process__title .line, .contact .mask .line').forEach((el) =>
   gsap.from(el, { yPercent: 110, duration: 1.3, ease: EASE, scrollTrigger: { trigger: el.parentElement, start: 'top 85%' } }),
 );
-gsap.from('.services__item', {
-  y: 84, autoAlpha: 0, duration: 1.2, ease: EASE, stagger: 0.08,
-  scrollTrigger: { trigger: '.services__list', start: 'top 80%' },
+/* ───────────── services: each row rises in once, the one in the middle is active ───────────── */
+$$('.services__item').forEach((item) => {
+  ScrollTrigger.create({
+    trigger: item, start: 'top 58%', end: 'bottom 42%',
+    onToggle: (self) => item.classList.toggle('is-active', self.isActive),
+  });
+  gsap.from(item, {
+    yPercent: 50, opacity: 0, duration: 0.9, ease: 'power3.out',
+    scrollTrigger: { trigger: item, start: 'top 92%', once: true },
+  });
 });
-
-/* ───────────── services: centre item is active ───────────── */
-$$('.services__item').forEach((item) =>
-  ScrollTrigger.create({ trigger: item, start: 'top 55%', end: 'bottom 45%', toggleClass: 'is-active' }),
-);
 
 /* ───────────── responsive, scroll-driven set pieces ───────────── */
 const mm = gsap.matchMedia();
@@ -267,7 +269,7 @@ mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
   render(0);
 
   const st = ScrollTrigger.create({
-    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.1, pin: true, scrub: 0.6, invalidateOnRefresh: true,
+    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.1, pin: true, scrub: 0.6, invalidateOnRefresh: true, refreshPriority: 1,
     onUpdate: (self) => render(self.progress),
     onRefresh: (self) => render(self.progress),
   });
@@ -317,7 +319,7 @@ mm.add('(max-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
   render(0);
 
   const st = ScrollTrigger.create({
-    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.5, pin: true, scrub: 0.6, invalidateOnRefresh: true,
+    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.5, pin: true, scrub: 0.6, invalidateOnRefresh: true, refreshPriority: 1,
     onUpdate: (self) => render(self.progress),
     onRefresh: (self) => render(self.progress),
   });
