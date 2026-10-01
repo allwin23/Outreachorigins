@@ -61,33 +61,57 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
   layout();
   new ResizeObserver(layout).observe(canvas);
 
-  // interaction
-  const target = { x: 0, y: 0 };
+  // interaction: pointer position swings the mark around, dragging spins it with inertia
+  const hover = { x: 0, y: 0 }; // smoothed pointer offsets
+  const aim = { x: 0, y: 0 };
+  let yaw = -1.1, spin = 0, dragging = false, lastX = 0, lastY = 0, tilt = 0;
   addEventListener('pointermove', (e) => {
-    target.x = (e.clientX / innerWidth - 0.5) * 0.6;
-    target.y = (e.clientY / innerHeight - 0.5) * 0.35;
+    aim.x = (e.clientX / innerWidth - 0.5) * 2; // -1 … 1
+    aim.y = (e.clientY / innerHeight - 0.5) * 2;
+    if (!dragging) return;
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    yaw += dx * 0.012; spin = dx * 0.012; tilt = Math.max(-0.6, Math.min(0.6, tilt + dy * 0.006));
   });
+  const hero = canvas.closest('.hero') ?? canvas;
+  hero.addEventListener('pointerdown', (e) => {
+    const t = e.target as Element;
+    if ((e as PointerEvent).button !== 0 || t.closest('a, button, input, textarea, label')) return;
+    dragging = true; lastX = (e as PointerEvent).clientX; lastY = (e as PointerEvent).clientY;
+    document.documentElement.classList.add('is-dragging');
+  });
+  const release = () => { dragging = false; document.documentElement.classList.remove('is-dragging'); };
+  addEventListener('pointerup', release);
+  addEventListener('pointercancel', release);
+  addEventListener('blur', release);
 
   let visible = true;
   new IntersectionObserver(([en]) => (visible = en.isIntersecting)).observe(canvas);
 
   // entrance
-  group.rotation.set(0.2, -1.1, 0);
+  group.rotation.set(0.2, yaw, 0);
   mat.opacity = 0;
   mat.transparent = true;
 
   const clock = new THREE.Clock();
+  const AUTO = 0.28; // rad/s — slow, steady left-to-right turn
   const tick = () => {
     requestAnimationFrame(tick);
+    const dt = Math.min(clock.getDelta(), 0.05);
     if (!visible) return;
-    const t = clock.getElapsedTime();
-    const k = 1 - Math.pow(0.001, clock.getDelta() || 0.016);
+    const t = clock.elapsedTime;
     const scroll = Math.min(1, scrollY / innerHeight);
-    const idle = reduced ? 0 : Math.sin(t * 0.35) * 0.12;
-    group.rotation.y += (-0.35 + target.x + idle + scroll * 0.6 - group.rotation.y) * 0.05;
-    group.rotation.x += (target.y * 0.6 + scroll * 0.25 - group.rotation.x) * 0.05;
+    if (!dragging) {
+      yaw += (reduced ? 0 : AUTO * dt) + spin;
+      spin *= Math.pow(0.04, dt); // inertia fades back to the idle turn
+      tilt *= Math.pow(0.35, dt);
+    }
+    hover.x += (aim.x - hover.x) * Math.min(1, dt * 3);
+    hover.y += (aim.y - hover.y) * Math.min(1, dt * 3);
+    group.rotation.y = yaw + hover.x * 0.9 + scroll * 0.6;
+    group.rotation.x += (hover.y * 0.25 + tilt + scroll * 0.25 - group.rotation.x) * Math.min(1, dt * 6);
     group.position.y += reduced ? 0 : Math.sin(t * 0.6) * 0.0006;
-    if (mat.opacity < 1) { mat.opacity = Math.min(1, mat.opacity + k * 0.02 + 0.01); if (mat.opacity >= 1) mat.transparent = false; }
+    if (mat.opacity < 1) { mat.opacity = Math.min(1, mat.opacity + dt * 1.2 + 0.01); if (mat.opacity >= 1) mat.transparent = false; }
     renderer.render(scene, camera);
   };
   tick();

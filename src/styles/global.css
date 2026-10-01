@@ -187,6 +187,7 @@ button { cursor: pointer; }
 
 /* ───────────────────────── hero ───────────────────────── */
 .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; overflow: hidden; }
+html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select: none; }
 .hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero__inner {
   position: relative; flex: 1; display: grid; grid-template-columns: 2.5fr 1fr; gap: 3rem;
