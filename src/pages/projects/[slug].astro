@@ -1,0 +1,37 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { projects, site } from '../../data/site';
+
+export function getStaticPaths() {
+  return projects.map((p, i) => ({ params: { slug: p.slug }, props: { p, i, next: projects[(i + 1) % projects.length] } }));
+}
+const { p, i, next } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<Layout title={`${p.name} · ${site.name}${site.nameAccent}`} description={p.blurb}>
+  <header class="phead phead--sub">
+    <p class="phead__label" data-intro>({pad(i + 1)}) · {p.year}</p>
+    <h1 class="phead__title">
+      <span class="mask"><span class="line" data-split-line>{p.name}</span></span>
+      <span class="mask"><span class="line serif" data-split-line>{p.tag}</span></span>
+    </h1>
+    <div class="phead__side">
+      <p data-intro>{p.roles.join(' · ')}</p>
+      <p data-intro class="phead__intro">{p.blurb}</p>
+    </div>
+  </header>
+
+  <section class="pdetail" style={`--c1:${p.tone[0]};--c2:${p.tone[1]}`}>
+    <div class="prow__img pdetail__hero">
+      {p.video ? <video src={p.video} muted loop playsinline autoplay></video>
+        : p.image ? <img src={p.image} alt="" />
+        : <div class="prow__ph"><span>{p.name}</span></div>}
+    </div>
+  </section>
+
+  <section class="pcta">
+    <p class="pcta__hook" data-reveal>Next project</p>
+    <a class="more" href={`/projects/${next.slug}/`}>{next.name} <sup>(→)</sup></a>
+    <a class="more" href="/projects/">All projects <sup>(05)</sup></a>
+  </section>
+</Layout>

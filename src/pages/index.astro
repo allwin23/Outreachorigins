@@ -32,7 +32,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <p class="hero__desc" data-intro>{hero.intro}</p>
         <ul class="hero__index">
           {projects.slice(0, 3).map((p, i) => (
-            <li data-intro><a href={`#work`}><i>{pad(i + 1)}</i>{p.name}</a></li>
+            <li data-intro><a href={`/projects/${p.slug}/`}><i>{pad(i + 1)}</i>{p.name}</a></li>
           ))}
         </ul>
       </div>
@@ -75,7 +75,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <div class="strip__viewport">
         <div class="strip__rail" id="strip-rail">
           {projects.map((p, i) => (
-            <a class={`strip-card strip-card--${p.shape}`} href="#" data-badge style={`--c1:${p.tone[0]};--c2:${p.tone[1]}`}>
+            <a class={`strip-card strip-card--${p.shape}`} href={`/projects/${p.slug}/`} data-badge style={`--c1:${p.tone[0]};--c2:${p.tone[1]}`}>
               <div class="strip-card__float">
                 <figure class="strip-card__media">
                   {p.video ? (
@@ -152,7 +152,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <ul class="services__list">
         {services.items.map((s) => (
           <li class="services__item">
-            <a class="services__link" href="#contact">
+            <a class="services__link" href="/services/">
               <span class="services__name">{s.name}</span>
               <span class="services__meta">{s.meta}</span>
             </a>

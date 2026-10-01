@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { servicesPage as pg, site } from '../data/site';
+const pad = (n: number) => String(n).padStart(2, '0');
+const words = (t: string) => t.split(' ');
+---
+<Layout title={`Services · ${site.name}${site.nameAccent}`}>
+  <header class="phead phead--sub">
+    <p class="phead__label" data-intro>{pg.label}</p>
+    <h1 class="phead__title">
+      {pg.title.map((t) => <span class="mask"><span class="line" data-split-line>{t}</span></span>)}
+    </h1>
+    <div class="phead__side">
+      <p data-intro>{pg.place}</p>
+      <p data-intro class="phead__intro">{pg.intro}</p>
+    </div>
+  </header>
+
+  <section class="principle">
+    <p class="split__label">{pg.principleLabel}</p>
+    <p class="scrub" data-scrub>{words(pg.principle).map((w) => <span class="w">{w}</span>)}</p>
+  </section>
+
+  <section class="plist-svc" id="prestations">
+    <p class="plist-svc__label">{pg.listLabel}</p>
+    {pg.items.map((s, i) => (
+      <article class="svc" data-svc>
+        <span class="svc__num">({pad(i + 1)})</span>
+        <h2 class="svc__name">{s.name}</h2>
+        <div class="svc__body">
+          <p class="svc__tags">{s.tags}</p>
+          <p class="svc__text">{s.text}</p>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="faq split">
+    <div><p class="split__label">{pg.faqLabel}</p></div>
+    <div>
+      <h2 class="faq__title" data-reveal>{pg.faqTitle}</h2>
+      <p class="faq__lead" data-reveal>{pg.faqLead}</p>
+      <div class="faq__list">
+        {pg.faq.map((f, i) => (
+          <article class="faq__item" data-reveal>
+            <span aria-hidden="true">({pad(i + 1)})</span>
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pcta"><a class="more" href="/#contact">Start a project <sup>(→)</sup></a></section>
+</Layout>

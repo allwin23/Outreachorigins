@@ -388,7 +388,7 @@ button { cursor: pointer; }
 .services__item:first-child { border-top: 1px solid rgba(14, 14, 13, 0.14); }
 .services__link { display: block; }
 .services__name {
-  display: inline-block; font-family: var(--font-grotesk); font-weight: 800; font-size: 6.45vw; line-height: 1.02; letter-spacing: -0.015em;
+  display: inline-block; font-family: var(--font-grotesk); font-weight: 800; font-size: 4.4vw; line-height: 1.05; letter-spacing: -0.015em;
   color: rgba(14, 14, 13, 0.2); transition: color 0.4s var(--ease-out), transform 0.55s var(--ease-out);
 }
 .services__meta {
@@ -535,7 +535,7 @@ button { cursor: pointer; }
   .process-card__ghost { font-size: 60vw; }
 
   .services { grid-template-columns: 1fr; padding-top: 6rem; padding-bottom: 6rem; }
-  .services__name { font-size: 9.5vw; }
+  .services__name { font-size: 7vw; }
   .services__meta { opacity: 1; transform: none; }
 
   .contact__grid { grid-template-columns: 1fr; gap: 3.5rem; }

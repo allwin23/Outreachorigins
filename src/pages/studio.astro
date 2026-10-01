@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { studioPage as pg, site } from '../data/site';
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<Layout title={`Studio · ${site.name}${site.nameAccent}`}>
+  <header class="phead phead--sub">
+    <p class="phead__label" data-intro>{pg.label}</p>
+    <h1 class="phead__title">
+      {pg.title.map((t, i) => <span class="mask"><span class={`line${i ? ' serif' : ''}`} data-split-line>{t}</span></span>)}
+    </h1>
+    <div class="phead__side">
+      <p data-intro>{pg.place}</p>
+      <p data-intro class="phead__intro">{pg.intro}</p>
+    </div>
+  </header>
+
+  <section class="principle">
+    <p class="split__label">{pg.beliefLabel}</p>
+    <p class="scrub" data-scrub>{pg.belief.split(' ').map((w) => <span class="w">{w}</span>)}</p>
+  </section>
+
+  <section class="approach" id="approach">
+    <p class="approach__label">{pg.approachLabel}</p>
+    {pg.approach.map((a, i) => (
+      <article class="approach__item" data-reveal>
+        <span>({pad(i + 1)})</span>
+        <h2>{a.name}</h2>
+        <p>{a.text}</p>
+      </article>
+    ))}
+  </section>
+
+  <section class="team split">
+    <div>
+      <h2 class="team__title"><span class="mask"><span class="line" data-split-line>{pg.teamTitle}</span></span></h2>
+      <span class="team__tag">{pg.teamTag}</span>
+    </div>
+    <div>
+      <p class="team__lead" data-reveal>{pg.teamLead}</p>
+      {pg.team.map((t, i) => (
+        <article class="team__row" data-reveal>
+          <span>({pad(i + 1)})</span>
+          <div><h3>{t.name}</h3><p>{t.text}</p></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="guarantee">
+    <h2 data-reveal>{pg.guaranteeTitle}</h2>
+    <div class="guarantee__grid">
+      {pg.guarantees.map((g) => (
+        <div data-reveal><strong>{g.value}</strong><span>{g.text}</span></div>
+      ))}
+    </div>
+  </section>
+
+  <section class="pcta">
+    <p class="pcta__hook" data-reveal>{pg.ctaHook}</p>
+    <a class="more" href="/#contact">Start a project <sup>(→)</sup></a>
+  </section>
+</Layout>

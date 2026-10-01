@@ -15,9 +15,10 @@ lenis.on('scroll', ScrollTrigger.update);
 gsap.ticker.add((t) => lenis.raf(t * 1000));
 gsap.ticker.lagSmoothing(0);
 
-$$<HTMLAnchorElement>('a[href^="#"]').forEach((a) =>
+$$<HTMLAnchorElement>('a[href*="#"]').forEach((a) =>
   a.addEventListener('click', (e) => {
-    const id = a.getAttribute('href')!;
+    if (a.pathname !== location.pathname || !a.hash) return;
+    const id = a.hash;
     if (id.length < 2) return;
     const target = $(id);
     if (!target) return;
@@ -136,6 +137,40 @@ gsap.to('#manifesto-text .w', {
   scrollTrigger: { trigger: '#manifesto-text', start: 'top 75%', end: 'bottom 60%', scrub: true },
 });
 
+/* ───────────── inner pages: split titles, scrubbed statements, filters ───────────── */
+$$('[data-split-line]').forEach((el, i) =>
+  gsap.fromTo(el, { yPercent: 110 }, { yPercent: 0, duration: 1.4, ease: EASE, delay: 0.25 + i * 0.12 }),
+);
+$$('[data-scrub]').forEach((el) =>
+  gsap.to($$('.w', el), { opacity: 1, ease: 'none', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 75%', end: 'bottom 60%', scrub: true } }),
+);
+$$('[data-svc]').forEach((item) => ScrollTrigger.create({ trigger: item, start: 'top 55%', end: 'bottom 45%', toggleClass: 'is-active' }));
+$$('.prow__img').forEach((img) =>
+  gsap.from(img, { clipPath: 'inset(0 0 100% 0)', duration: 1.4, ease: EASE, scrollTrigger: { trigger: img, start: 'top 90%' } }),
+);
+$$('.prow').forEach((row) =>
+  gsap.from($('.prow__text', row)!, { y: 40, autoAlpha: 0, duration: 1.1, ease: EASE, scrollTrigger: { trigger: row, start: 'top 85%' } }),
+);
+const filters = $('#filters');
+if (filters) {
+  filters.hidden = false;
+  const rows = $$('.prow'), empty = $('.plist__empty')!;
+  filters.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
+    if (!btn) return;
+    $$('[data-filter]', filters).forEach((b) => b.classList.toggle('is-on', b === btn));
+    const f = btn.dataset.filter;
+    let shown = 0;
+    rows.forEach((r) => {
+      const ok = f === 'all' || (r.dataset.cats ?? '').split(' ').includes(f!);
+      r.classList.toggle('is-hidden', !ok);
+      if (ok) { shown++; gsap.fromTo(r, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: EASE, delay: shown * 0.06 }); }
+    });
+    empty.hidden = shown > 0;
+    ScrollTrigger.refresh();
+  });
+}
+
 /* ───────────── generic reveals ───────────── */
 $$('[data-reveal]').forEach((el) =>
   gsap.from(el, { y: 24, autoAlpha: 0, duration: 1.1, ease: EASE, scrollTrigger: { trigger: el, start: 'top 88%' } }),
@@ -158,7 +193,8 @@ const mm = gsap.matchMedia();
 
 mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
   /* work strip: pinned diagonal rail with depth focus */
-  const pin = $('#strip-pin')!, rail = $('#strip-rail')!, counter = $('#strip-count')!;
+  const pin = $('#strip-pin'), rail = $('#strip-rail'), counter = $('#strip-count');
+  if (!pin || !rail || !counter) return;
   const cards = $$('.strip-card', rail);
   const floats = cards.map((c) => $('.strip-card__float', c)!);
   const n = cards.length;
