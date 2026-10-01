@@ -66,9 +66,57 @@ if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced) {
   document.addEventListener('pointerleave', () => root.classList.remove('is-hovering', 'has-badge'));
 }
 
+/* ───────────── page transition: logo outline draws, fills, then wipes away ───────────── */
+const entering = document.documentElement.classList.contains('is-entering');
+const ptrans = $('#ptrans')!;
+const pPaths = $$<SVGPathElement>('path', ptrans);
+const pLogo = $('svg', ptrans)!;
+if (entering) {
+  try { sessionStorage.removeItem('ptrans'); } catch {}
+  gsap.set(ptrans, { visibility: 'visible' });
+  gsap.set(pPaths, { strokeDashoffset: 0, fillOpacity: 1 });
+  document.documentElement.classList.remove('is-entering');
+  gsap.timeline({ onComplete: () => { gsap.set(ptrans, { visibility: 'hidden', xPercent: 0 }); gsap.set(pLogo, { opacity: 1 }); } })
+    .to(pLogo, { opacity: 0, duration: 0.3, delay: 0.1 })
+    .to(ptrans, { xPercent: 100, duration: 1.05, ease: 'expo.inOut' }, '<0.1');
+}
+let leaving = false;
+function leave(href: string) {
+  if (leaving) return;
+  leaving = true;
+  lenis.stop();
+  gsap.set(pPaths, { strokeDashoffset: 1, fillOpacity: 0 });
+  gsap.timeline({ onComplete: () => { try { sessionStorage.setItem('ptrans', '1'); } catch {} location.href = href; } })
+    .set(ptrans, { visibility: 'visible', xPercent: 0 })
+    .fromTo(ptrans, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' })
+    .to(pPaths[0], { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, 0.1)
+    .to(pPaths[1], { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, 0.85)
+    .to(pPaths, { fillOpacity: 1, duration: 0.35, ease: 'power1.inOut' }, 1.2)
+    .to({}, { duration: 0.15 });
+}
+document.addEventListener('click', (e) => {
+  const a = (e.target as Element).closest<HTMLAnchorElement>('a[href]');
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  if (a.target || a.hasAttribute('download') || a.origin !== location.origin) return;
+  if (a.pathname === location.pathname && a.search === location.search) {
+    if (!a.hash) { e.preventDefault(); closeMenu(); lenis.scrollTo(0, { duration: 1.2 }); }
+    return; // same-page hashes are handled above
+  }
+  if (reduced) return;
+  e.preventDefault();
+  closeMenu();
+  leave(a.href);
+});
+addEventListener('pageshow', (e) => {
+  if (!e.persisted) return;
+  leaving = false;
+  gsap.set(ptrans, { opacity: 1, visibility: 'hidden' });
+  lenis.start();
+});
+
 /* ───────────── preloader + intro ───────────── */
 const preloader = $('#preloader');
-const seen = (() => { try { return sessionStorage.getItem('intro-seen') === '1'; } catch { return false; } })();
+const seen = entering || (() => { try { return sessionStorage.getItem('intro-seen') === '1'; } catch { return false; } })();
 
 gsap.set('.hero__title .line', { yPercent: 110 });
 gsap.set('[data-intro]', { y: 22, autoAlpha: 0 });
@@ -241,6 +289,39 @@ mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
   );
 
   return () => { gsap.ticker.remove(bob); st.kill(); };
+});
+
+mm.add('(max-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+  /* work strip on small screens: pinned, vertical scroll slides the rail sideways */
+  const pin = $('#strip-pin'), rail = $('#strip-rail'), counter = $('#strip-count'), intro = $('.strip__intro');
+  if (!pin || !rail || !counter) return;
+  const cards = $$('.strip-card', rail);
+  const n = cards.length;
+  const vh = () => innerHeight;
+  const headH = () => ($('.strip__head', pin)?.getBoundingClientRect().height ?? 0) + 8;
+  const endX = () => -Math.max(0, rail.scrollWidth - innerWidth);
+
+  const render = (p: number) => {
+    gsap.set(rail, { x: endX() * p, y: headH() + 24 - p * 40 });
+    const focus = p * (n - 1);
+    cards.forEach((card, i) => {
+      const d = i - focus, a = Math.abs(d);
+      gsap.set(card, {
+        y: i * 14, rotationZ: -1.4 * Math.sign(d || 1) * Math.min(a, 1),
+        scale: 1 - Math.min(a, 1) * 0.056, opacity: Math.max(0.55, 1 - a * 0.25),
+      });
+    });
+    counter.textContent = String(Math.round(focus) + 1).padStart(2, '0');
+    if (intro) gsap.set(intro, { autoAlpha: 1 - Math.min(1, p / 0.08) });
+  };
+  render(0);
+
+  const st = ScrollTrigger.create({
+    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.5, pin: true, scrub: 0.6, invalidateOnRefresh: true,
+    onUpdate: (self) => render(self.progress),
+    onRefresh: (self) => render(self.progress),
+  });
+  return () => { st.kill(); gsap.set([rail, ...cards, intro].filter(Boolean) as Element[], { clearProps: 'all' }); };
 });
 
 /* process progress bar */

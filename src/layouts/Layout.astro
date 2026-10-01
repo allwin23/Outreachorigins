@@ -16,6 +16,7 @@ const { title = site.title, description = site.description } = Astro.props;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0e0e0d" />
     <title>{title}</title>
+    <script is:inline>try { if (sessionStorage.getItem('ptrans') === '1') document.documentElement.classList.add('is-entering'); } catch (e) {}</script>
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link
       rel="stylesheet"
@@ -92,6 +93,13 @@ const { title = site.title, description = site.description } = Astro.props;
         </span>
       </div>
     </footer>
+
+    <div class="ptrans" id="ptrans" aria-hidden="true">
+      <svg viewBox="-4 -4 108 100" fill="none">
+        <path pathLength="1" d="M0 0H34L50 46L66 0H100L64 92H36Z" />
+        <path pathLength="1" d="M76 62H100V92H70Z" />
+      </svg>
+    </div>
 
     <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span></div>
     <div class="cursor-ring" aria-hidden="true"><span class="cursor-ring__in"></span></div>
