@@ -74,18 +74,20 @@ button { cursor: pointer; }
 /* ───────────────────────── cursor ───────────────────────── */
 .cursor, .cursor-ring, .cursor-badge { position: fixed; top: 0; left: 0; z-index: 200; pointer-events: none; display: none; }
 .has-cursor .cursor, .has-cursor .cursor-ring, .has-cursor .cursor-badge { display: block; }
+/* the blend must sit on the fixed wrappers (they form stacking contexts) so it reaches the page: white on dark, black on light */
+.cursor, .cursor-ring { mix-blend-mode: difference; }
 .has-cursor, .has-cursor a, .has-cursor button, .has-cursor label { cursor: none; }
 .cursor__dot {
   position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%;
-  background: var(--ink); mix-blend-mode: difference;
+  background: var(--ink);
   transition: transform 0.2s var(--ease-out);
 }
 .cursor-ring__in {
   position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%;
-  border: 1px solid rgba(236, 233, 226, 0.5); mix-blend-mode: difference;
+  border: 1px solid rgba(236, 233, 226, 0.75);
   transition: transform 0.28s var(--ease-out), background-color 0.28s var(--ease-out), border-color 0.28s var(--ease-out);
 }
-.is-hovering .cursor-ring__in { transform: scale(0.48); background: rgba(236, 233, 226, 0.9); }
+.is-hovering .cursor-ring__in { transform: scale(0.48); background: var(--ink); }
 .is-hovering .cursor__dot { transform: scale(0); }
 .cursor-badge__in {
   position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) scale(0.6); opacity: 0;
