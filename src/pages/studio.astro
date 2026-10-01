@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Contact from '../components/Contact.astro';
 import { studioPage as pg, site } from '../data/site';
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -56,8 +57,5 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
   </section>
 
-  <section class="pcta">
-    <p class="pcta__hook" data-reveal>{pg.ctaHook}</p>
-    <a class="more" href="/#contact">Start a project <sup>(→)</sup></a>
-  </section>
+  <Contact />
 </Layout>

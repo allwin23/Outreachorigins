@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Contact from '../components/Contact.astro';
 import { servicesPage as pg, site } from '../data/site';
 const pad = (n: number) => String(n).padStart(2, '0');
 const words = (t: string) => t.split(' ');
@@ -8,7 +9,7 @@ const words = (t: string) => t.split(' ');
   <header class="phead phead--sub">
     <p class="phead__label" data-intro>{pg.label}</p>
     <h1 class="phead__title">
-      {pg.title.map((t) => <span class="mask"><span class="line" data-split-line>{t}</span></span>)}
+      {pg.title.map((t, i) => <span class="mask"><span class={`line${i ? ' serif' : ''}`} data-split-line>{t}</span></span>)}
     </h1>
     <div class="phead__side">
       <p data-intro>{pg.place}</p>
@@ -52,5 +53,5 @@ const words = (t: string) => t.split(' ');
     </div>
   </section>
 
-  <section class="pcta"><a class="more" href="/#contact">Start a project <sup>(→)</sup></a></section>
+  <Contact />
 </Layout>

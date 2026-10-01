@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Contact from '../../components/Contact.astro';
 import { projects, site } from '../../data/site';
 
 export function getStaticPaths() {
@@ -34,4 +35,5 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <a class="more" href={`/projects/${next.slug}/`}>{next.name} <sup>(→)</sup></a>
     <a class="more" href="/projects/">All projects <sup>(05)</sup></a>
   </section>
+  <Contact />
 </Layout>

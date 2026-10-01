@@ -11,16 +11,17 @@
 .phead--sub { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 1.5vw; padding-bottom: 6rem; }
 .phead__label { grid-column: 1 / 13; font-family: var(--font-serif); font-style: italic; font-size: 1.05rem; color: var(--ink-dim); margin-bottom: 3rem; }
 .phead__title {
-  grid-column: 1 / 13; font-family: var(--font-grotesk); font-weight: 800; font-size: 11vw; line-height: 0.86; letter-spacing: -0.055em; text-transform: uppercase;
+  grid-column: 1 / 13; font-family: var(--font-grotesk); font-weight: 800; font-size: 15vw; line-height: 0.92; letter-spacing: -0.02em; text-transform: uppercase;
 }
-.phead__title .serif { text-transform: none; font-weight: 400; letter-spacing: -0.03em; }
+.phead__title .mask + .mask { margin-top: 0.02em; }
+.phead__title .serif { text-transform: none; font-weight: 400; letter-spacing: 0; font-size: 0.733em; line-height: 1.1; padding-left: 1.1em; color: var(--ink-dim); }
 .phead__side { grid-column: 7 / 13; margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--line); display: grid; gap: 1.4rem; }
 .phead__side > p:first-child { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
 .phead__intro { font-size: 1.15rem; line-height: 1.5; max-width: 30rem; }
 
 /* scroll-scrubbed statement (same behaviour as the home manifesto) */
 .principle { display: grid; grid-template-columns: 1fr 2.64fr; column-gap: 6vw; padding: 8rem var(--gutter); border-top: 1px solid var(--line); }
-.scrub { max-width: 52rem; font-family: var(--font-grotesk); font-weight: 700; font-size: 3.2vw; line-height: 1.2; letter-spacing: -0.01em; }
+.scrub { max-width: 52rem; font-family: var(--font-grotesk); font-weight: 700; font-size: 4vw; line-height: 1.2; letter-spacing: -0.01em; }
 .scrub .w { display: inline-block; opacity: 0.14; margin-right: 0.26em; }
 
 /* CTA band */
@@ -80,7 +81,7 @@
 .svc.is-active, .svc:hover { color: #0e0e0d; }
 .svc__num { font-size: 0.85rem; padding-top: 1rem; }
 .svc__name {
-  font-family: var(--font-grotesk); font-weight: 800; font-size: 5vw; line-height: 1; letter-spacing: -0.04em;
+  font-family: var(--font-grotesk); font-weight: 800; font-size: 3.78vw; line-height: 1; letter-spacing: -0.015em; text-transform: uppercase;
   transition: transform 0.6s var(--ease-out);
 }
 .svc.is-active .svc__name, .svc:hover .svc__name { transform: translateX(1.4rem); }
@@ -90,7 +91,7 @@
 .svc__text { max-width: 24rem; line-height: 1.55; font-size: 0.95rem; }
 
 .faq { border-top: 1px solid var(--line); }
-.faq__title { font-family: var(--font-grotesk); font-weight: 800; font-size: 3.6vw; line-height: 1.02; letter-spacing: -0.035em; max-width: 46rem; }
+.faq__title { font-family: var(--font-grotesk); font-weight: 800; font-size: 4vw; line-height: 1.05; letter-spacing: -0.015em; max-width: 46rem; }
 .faq__lead { max-width: 32rem; margin-top: 2rem; color: var(--ink-dim); line-height: 1.6; }
 .faq__list { margin-top: 4rem; border-top: 1px solid var(--line); }
 .faq__item { display: grid; grid-template-columns: 4rem 1fr; padding: 1.6rem 0; border-bottom: 1px solid var(--line); }
