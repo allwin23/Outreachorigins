@@ -105,12 +105,12 @@ function leave(href: string) {
   };
   gsap.timeline({ onComplete: () => { try { sessionStorage.setItem('ptrans', '1'); } catch {} location.href = href; } })
     .set(ptrans, { visibility: 'visible', xPercent: 0 })
-    .fromTo(ptrans, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15, ease: 'power1.out' })
+    .fromTo(ptrans, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2, ease: 'power1.out' })
     .set(spark, { opacity: 1 })
-    .to(trace, { t: 1, duration: 0.6, ease: 'power1.inOut', onUpdate: draw }, 0.1)
-    .to(spark, { opacity: 0, duration: 0.12 }, '>-0.05')
-    .to(pPaths, { fillOpacity: 1, duration: 0.25, ease: 'power1.inOut' }, '>-0.1')
-    .to({}, { duration: 0.08 }); // ≈ 1s in total before the next page loads
+    .to(trace, { t: 1, duration: 0.95, ease: 'power1.inOut', onUpdate: draw }, 0.15)
+    .to(spark, { opacity: 0, duration: 0.15 }, '>-0.05')
+    .to(pPaths, { fillOpacity: 1, duration: 0.35, ease: 'power1.inOut' }, '>-0.1')
+    .to({}, { duration: 0.05 }); // ≈ 1.5s in total before the next page loads
 }
 document.addEventListener('click', (e) => {
   const a = (e.target as Element).closest<HTMLAnchorElement>('a[href]');
