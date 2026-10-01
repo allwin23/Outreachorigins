@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Mark from '../components/Mark.astro';
 import Wordmark from '../components/Wordmark.astro';
+import Contact from '../components/Contact.astro';
 import { site, hero, manifesto, projects, strip, process, services, about, contact } from '../data/site';
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -32,7 +33,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <p class="hero__desc" data-intro>{hero.intro}</p>
         <ul class="hero__index">
           {projects.slice(0, 3).map((p, i) => (
-            <li data-intro><a href={`#work`}><i>{pad(i + 1)}</i>{p.name}</a></li>
+            <li data-intro><a href={`/projects/${p.slug}/`}><i>{pad(i + 1)}</i>{p.name}</a></li>
           ))}
         </ul>
       </div>
@@ -75,7 +76,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <div class="strip__viewport">
         <div class="strip__rail" id="strip-rail">
           {projects.map((p, i) => (
-            <a class={`strip-card strip-card--${p.shape}`} href="#" data-badge style={`--c1:${p.tone[0]};--c2:${p.tone[1]}`}>
+            <a class={`strip-card strip-card--${p.shape}`} href={`/projects/${p.slug}/`} data-badge style={`--c1:${p.tone[0]};--c2:${p.tone[1]}`}>
               <div class="strip-card__float">
                 <figure class="strip-card__media">
                   {p.video ? (
@@ -152,7 +153,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <ul class="services__list">
         {services.items.map((s) => (
           <li class="services__item">
-            <a class="services__link" href="#contact">
+            <a class="services__link" href="/services/">
               <span class="services__name">{s.name}</span>
               <span class="services__meta">{s.meta}</span>
             </a>
@@ -171,58 +172,5 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
   </section>
 
-  <!-- contact -->
-  <section class="contact" id="contact">
-    <div class="contact__grid">
-      <div>
-        <p class="contact__avail"><span class="contact__dot"></span>{contact.avail}</p>
-        <p class="contact__hook"><span class="mask"><span class="line">{contact.hook}</span></span></p>
-        <a class="contact__mail" href={`mailto:${site.email}`}><span class="mask"><span class="line">{site.email}</span></span></a>
-        <p class="contact__sub">{contact.sub}</p>
-      </div>
-
-      <form class="cform" id="cform" novalidate>
-        <div class="cform__head">
-          <p class="cform__count"><span id="cform-step">01</span> <em>/ 03</em></p>
-          <p class="cform__steplabel" id="cform-label">Who are you?</p>
-        </div>
-        <div class="cform__steps">
-          <fieldset class="cform__step is-active" data-label="Who are you?">
-            <legend class="sr-only">Your details</legend>
-            <div class="cform__field"><label for="f-name">Full name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
-            <div class="cform__field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
-          </fieldset>
-          <fieldset class="cform__step" data-label="What's it about?">
-            <legend class="sr-only">Topic and budget</legend>
-            <div>
-              <p class="cform__grouplabel">It's about…</p>
-              <div class="cform__pills">
-                {contact.kinds.map((k, i) => <label class="choice"><input type="radio" name="kind" value={k} checked={i === 0} /><span>{k}</span></label>)}
-              </div>
-            </div>
-            <div>
-              <p class="cform__grouplabel">Budget <em>· optional</em></p>
-              <div class="cform__pills">
-                {contact.budgets.map((b) => <label class="choice"><input type="radio" name="budget" value={b} /><span>{b}</span></label>)}
-              </div>
-            </div>
-          </fieldset>
-          <fieldset class="cform__step" data-label="Tell me more">
-            <legend class="sr-only">Your message</legend>
-            <div class="cform__field"><label for="f-msg">Your project in a few lines</label><textarea id="f-msg" name="message" rows="4" required></textarea></div>
-          </fieldset>
-        </div>
-        <div class="cform__nav">
-          <button class="cform__back" type="button" hidden>Back</button>
-          <button class="pill cform__submit" type="submit"><span id="cform-next">Next</span> <span aria-hidden="true">→</span></button>
-        </div>
-        <div class="cform__progress"><span id="cform-progress"></span></div>
-        <p class="cform__note">{contact.note}</p>
-        <div class="cform__done" role="status">
-          <h3>Got it.</h3>
-          <p>Message sent. I'll get back to you shortly.</p>
-        </div>
-      </form>
-    </div>
-  </section>
+  <Contact />
 </Layout>

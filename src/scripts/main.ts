@@ -15,9 +15,10 @@ lenis.on('scroll', ScrollTrigger.update);
 gsap.ticker.add((t) => lenis.raf(t * 1000));
 gsap.ticker.lagSmoothing(0);
 
-$$<HTMLAnchorElement>('a[href^="#"]').forEach((a) =>
+$$<HTMLAnchorElement>('a[href*="#"]').forEach((a) =>
   a.addEventListener('click', (e) => {
-    const id = a.getAttribute('href')!;
+    if (a.pathname !== location.pathname || !a.hash) return;
+    const id = a.hash;
     if (id.length < 2) return;
     const target = $(id);
     if (!target) return;
@@ -65,9 +66,75 @@ if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced) {
   document.addEventListener('pointerleave', () => root.classList.remove('is-hovering', 'has-badge'));
 }
 
+/* ───────────── page transition: logo outline draws, fills, then wipes away ───────────── */
+const entering = document.documentElement.classList.contains('is-entering');
+const ptrans = $('#ptrans')!;
+const pPaths = $$<SVGPathElement>('path', ptrans);
+const pLogo = $('svg', ptrans)!;
+if (entering) {
+  try { sessionStorage.removeItem('ptrans'); } catch {}
+  gsap.set(ptrans, { visibility: 'visible' });
+  gsap.set(pPaths, { strokeDashoffset: 0, fillOpacity: 1 });
+  document.documentElement.classList.remove('is-entering');
+  gsap.timeline({ onComplete: () => { gsap.set(ptrans, { visibility: 'hidden', xPercent: 0 }); gsap.set(pLogo, { opacity: 1 }); } })
+    .to(pLogo, { opacity: 0, duration: 0.3, delay: 0.1 })
+    .to(ptrans, { xPercent: 100, duration: 1.05, ease: 'expo.inOut' }, '<0.1');
+}
+let leaving = false;
+const spark = $<SVGCircleElement>('.ptrans__spark', ptrans)!;
+function leave(href: string) {
+  if (leaving) return;
+  leaving = true;
+  lenis.stop();
+  gsap.set(pPaths, { strokeDashoffset: 1, fillOpacity: 0 });
+  gsap.set(spark, { opacity: 0 });
+  // one continuous trace: a point of white light draws the V outline, then the dot
+  const len = pPaths.map((el) => el.getTotalLength());
+  const total = len[0] + len[1];
+  const trace = { t: 0 };
+  const draw = () => {
+    const dist = trace.t * total;
+    const d0 = Math.min(1, dist / len[0]);
+    const d1 = Math.max(0, Math.min(1, (dist - len[0]) / len[1]));
+    pPaths[0].style.strokeDashoffset = String(1 - d0);
+    pPaths[1].style.strokeDashoffset = String(1 - d1);
+    const onFirst = dist <= len[0];
+    const pt = onFirst ? pPaths[0].getPointAtLength(dist) : pPaths[1].getPointAtLength(Math.min(len[1], dist - len[0]));
+    spark.setAttribute('cx', String(pt.x));
+    spark.setAttribute('cy', String(pt.y));
+  };
+  gsap.timeline({ onComplete: () => { try { sessionStorage.setItem('ptrans', '1'); } catch {} location.href = href; } })
+    .set(ptrans, { visibility: 'visible', xPercent: 0 })
+    .fromTo(ptrans, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' })
+    .set(spark, { opacity: 1 })
+    .to(trace, { t: 1, duration: 1.7, ease: 'power1.inOut', onUpdate: draw }, 0.2)
+    .to(spark, { opacity: 0, duration: 0.2 }, '>-0.05')
+    .to(pPaths, { fillOpacity: 1, duration: 0.45, ease: 'power1.inOut' }, '>-0.1')
+    .to({}, { duration: 0.15 });
+}
+document.addEventListener('click', (e) => {
+  const a = (e.target as Element).closest<HTMLAnchorElement>('a[href]');
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  if (a.target || a.hasAttribute('download') || a.origin !== location.origin) return;
+  if (a.pathname === location.pathname && a.search === location.search) {
+    if (!a.hash) { e.preventDefault(); closeMenu(); lenis.scrollTo(0, { duration: 1.2 }); }
+    return; // same-page hashes are handled above
+  }
+  if (reduced) return;
+  e.preventDefault();
+  closeMenu();
+  leave(a.href);
+});
+addEventListener('pageshow', (e) => {
+  if (!e.persisted) return;
+  leaving = false;
+  gsap.set(ptrans, { opacity: 1, visibility: 'hidden' });
+  lenis.start();
+});
+
 /* ───────────── preloader + intro ───────────── */
 const preloader = $('#preloader');
-const seen = (() => { try { return sessionStorage.getItem('intro-seen') === '1'; } catch { return false; } })();
+const seen = entering || (() => { try { return sessionStorage.getItem('intro-seen') === '1'; } catch { return false; } })();
 
 gsap.set('.hero__title .line', { yPercent: 110 });
 gsap.set('[data-intro]', { y: 22, autoAlpha: 0 });
@@ -136,6 +203,40 @@ gsap.to('#manifesto-text .w', {
   scrollTrigger: { trigger: '#manifesto-text', start: 'top 75%', end: 'bottom 60%', scrub: true },
 });
 
+/* ───────────── inner pages: split titles, scrubbed statements, filters ───────────── */
+$$('[data-split-line]').forEach((el, i) =>
+  gsap.fromTo(el, { yPercent: 110 }, { yPercent: 0, duration: 1.4, ease: EASE, delay: 0.25 + i * 0.12 }),
+);
+$$('[data-scrub]').forEach((el) =>
+  gsap.to($$('.w', el), { opacity: 1, ease: 'none', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 75%', end: 'bottom 60%', scrub: true } }),
+);
+$$('[data-svc]').forEach((item) => ScrollTrigger.create({ trigger: item, start: 'top 55%', end: 'bottom 45%', toggleClass: 'is-active' }));
+$$('.prow__img').forEach((img) =>
+  gsap.from(img, { clipPath: 'inset(0 0 100% 0)', duration: 1.4, ease: EASE, scrollTrigger: { trigger: img, start: 'top 90%' } }),
+);
+$$('.prow').forEach((row) =>
+  gsap.from($('.prow__text', row)!, { y: 40, autoAlpha: 0, duration: 1.1, ease: EASE, scrollTrigger: { trigger: row, start: 'top 85%' } }),
+);
+const filters = $('#filters');
+if (filters) {
+  filters.hidden = false;
+  const rows = $$('.prow'), empty = $('.plist__empty')!;
+  filters.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
+    if (!btn) return;
+    $$('[data-filter]', filters).forEach((b) => b.classList.toggle('is-on', b === btn));
+    const f = btn.dataset.filter;
+    let shown = 0;
+    rows.forEach((r) => {
+      const ok = f === 'all' || (r.dataset.cats ?? '').split(' ').includes(f!);
+      r.classList.toggle('is-hidden', !ok);
+      if (ok) { shown++; gsap.fromTo(r, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: EASE, delay: shown * 0.06 }); }
+    });
+    empty.hidden = shown > 0;
+    ScrollTrigger.refresh();
+  });
+}
+
 /* ───────────── generic reveals ───────────── */
 $$('[data-reveal]').forEach((el) =>
   gsap.from(el, { y: 24, autoAlpha: 0, duration: 1.1, ease: EASE, scrollTrigger: { trigger: el, start: 'top 88%' } }),
@@ -143,22 +244,25 @@ $$('[data-reveal]').forEach((el) =>
 $$('.process__title .line, .contact .mask .line').forEach((el) =>
   gsap.from(el, { yPercent: 110, duration: 1.3, ease: EASE, scrollTrigger: { trigger: el.parentElement, start: 'top 85%' } }),
 );
-gsap.from('.services__item', {
-  y: 84, autoAlpha: 0, duration: 1.2, ease: EASE, stagger: 0.08,
-  scrollTrigger: { trigger: '.services__list', start: 'top 80%' },
+/* ───────────── services: each row rises in once, the one in the middle is active ───────────── */
+$$('.services__item').forEach((item) => {
+  ScrollTrigger.create({
+    trigger: item, start: 'top 58%', end: 'bottom 42%',
+    onToggle: (self) => item.classList.toggle('is-active', self.isActive),
+  });
+  gsap.from(item, {
+    yPercent: 50, opacity: 0, duration: 0.9, ease: 'power3.out',
+    scrollTrigger: { trigger: item, start: 'top 92%', once: true },
+  });
 });
-
-/* ───────────── services: centre item is active ───────────── */
-$$('.services__item').forEach((item) =>
-  ScrollTrigger.create({ trigger: item, start: 'top 55%', end: 'bottom 45%', toggleClass: 'is-active' }),
-);
 
 /* ───────────── responsive, scroll-driven set pieces ───────────── */
 const mm = gsap.matchMedia();
 
 mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
   /* work strip: pinned diagonal rail with depth focus */
-  const pin = $('#strip-pin')!, rail = $('#strip-rail')!, counter = $('#strip-count')!;
+  const pin = $('#strip-pin'), rail = $('#strip-rail'), counter = $('#strip-count');
+  if (!pin || !rail || !counter) return;
   const cards = $$('.strip-card', rail);
   const floats = cards.map((c) => $('.strip-card__float', c)!);
   const n = cards.length;
@@ -183,7 +287,7 @@ mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
   render(0);
 
   const st = ScrollTrigger.create({
-    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.1, pin: true, scrub: 0.6, invalidateOnRefresh: true,
+    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.1, pin: true, scrub: 0.6, invalidateOnRefresh: true, refreshPriority: 1,
     onUpdate: (self) => render(self.progress),
     onRefresh: (self) => render(self.progress),
   });
@@ -205,6 +309,39 @@ mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
   );
 
   return () => { gsap.ticker.remove(bob); st.kill(); };
+});
+
+mm.add('(max-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+  /* work strip on small screens: pinned, vertical scroll slides the rail sideways */
+  const pin = $('#strip-pin'), rail = $('#strip-rail'), counter = $('#strip-count'), intro = $('.strip__intro');
+  if (!pin || !rail || !counter) return;
+  const cards = $$('.strip-card', rail);
+  const n = cards.length;
+  const vh = () => innerHeight;
+  const headH = () => ($('.strip__head', pin)?.getBoundingClientRect().height ?? 0) + 8;
+  const endX = () => -Math.max(0, rail.scrollWidth - innerWidth);
+
+  const render = (p: number) => {
+    gsap.set(rail, { x: endX() * p, y: headH() + 24 - p * 40 });
+    const focus = p * (n - 1);
+    cards.forEach((card, i) => {
+      const d = i - focus, a = Math.abs(d);
+      gsap.set(card, {
+        y: i * 14, rotationZ: -1.4 * Math.sign(d || 1) * Math.min(a, 1),
+        scale: 1 - Math.min(a, 1) * 0.056, opacity: Math.max(0.55, 1 - a * 0.25),
+      });
+    });
+    counter.textContent = String(Math.round(focus) + 1).padStart(2, '0');
+    if (intro) gsap.set(intro, { autoAlpha: 1 - Math.min(1, p / 0.08) });
+  };
+  render(0);
+
+  const st = ScrollTrigger.create({
+    trigger: pin, start: 'top top', end: () => '+=' + vh() * 1.5, pin: true, scrub: 0.6, invalidateOnRefresh: true, refreshPriority: 1,
+    onUpdate: (self) => render(self.progress),
+    onRefresh: (self) => render(self.progress),
+  });
+  return () => { st.kill(); gsap.set([rail, ...cards, intro].filter(Boolean) as Element[], { clearProps: 'all' }); };
 });
 
 /* process progress bar */
