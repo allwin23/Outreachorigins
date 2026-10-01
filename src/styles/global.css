@@ -582,9 +582,10 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
   display: grid; place-items: center; visibility: hidden; pointer-events: none;
 }
 .ptrans svg { width: min(19vw, 22rem); min-width: 120px; overflow: visible; }
+.ptrans__spark { fill: #fff; opacity: 0; filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px rgba(255, 255, 255, 0.9)); }
 .ptrans path {
   stroke: var(--ink); stroke-width: 0.6; stroke-linejoin: round; fill: var(--ink); fill-opacity: 0;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
+  stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7));
 }
 html.is-entering .ptrans { visibility: visible; }
 html.is-entering .ptrans path { fill-opacity: 1; stroke-dashoffset: 0; }

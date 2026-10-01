@@ -81,17 +81,35 @@ if (entering) {
     .to(ptrans, { xPercent: 100, duration: 1.05, ease: 'expo.inOut' }, '<0.1');
 }
 let leaving = false;
+const spark = $<SVGCircleElement>('.ptrans__spark', ptrans)!;
 function leave(href: string) {
   if (leaving) return;
   leaving = true;
   lenis.stop();
   gsap.set(pPaths, { strokeDashoffset: 1, fillOpacity: 0 });
+  gsap.set(spark, { opacity: 0 });
+  // one continuous trace: a point of white light draws the V outline, then the dot
+  const len = pPaths.map((el) => el.getTotalLength());
+  const total = len[0] + len[1];
+  const trace = { t: 0 };
+  const draw = () => {
+    const dist = trace.t * total;
+    const d0 = Math.min(1, dist / len[0]);
+    const d1 = Math.max(0, Math.min(1, (dist - len[0]) / len[1]));
+    pPaths[0].style.strokeDashoffset = String(1 - d0);
+    pPaths[1].style.strokeDashoffset = String(1 - d1);
+    const onFirst = dist <= len[0];
+    const pt = onFirst ? pPaths[0].getPointAtLength(dist) : pPaths[1].getPointAtLength(Math.min(len[1], dist - len[0]));
+    spark.setAttribute('cx', String(pt.x));
+    spark.setAttribute('cy', String(pt.y));
+  };
   gsap.timeline({ onComplete: () => { try { sessionStorage.setItem('ptrans', '1'); } catch {} location.href = href; } })
     .set(ptrans, { visibility: 'visible', xPercent: 0 })
     .fromTo(ptrans, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' })
-    .to(pPaths[0], { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, 0.1)
-    .to(pPaths[1], { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, 0.85)
-    .to(pPaths, { fillOpacity: 1, duration: 0.35, ease: 'power1.inOut' }, 1.2)
+    .set(spark, { opacity: 1 })
+    .to(trace, { t: 1, duration: 1.7, ease: 'power1.inOut', onUpdate: draw }, 0.2)
+    .to(spark, { opacity: 0, duration: 0.2 }, '>-0.05')
+    .to(pPaths, { fillOpacity: 1, duration: 0.45, ease: 'power1.inOut' }, '>-0.1')
     .to({}, { duration: 0.15 });
 }
 document.addEventListener('click', (e) => {
