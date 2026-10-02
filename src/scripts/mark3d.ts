@@ -1,11 +1,22 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
-// Same outline as src/components/Mark.astro (viewBox 0 0 100 92), y flipped for 3D.
-const MARK_POINTS: [number, number][][] = [
-  [[0, 0], [34, 0], [50, 46], [66, 0], [100, 0], [64, 92], [36, 92]],
-  [[76, 62], [100, 62], [100, 92], [70, 92]],
-];
+// Same "Or" outline as src/components/Mark.astro (viewBox 0 0 144 92), y flipped for 3D.
+function markShapes() {
+  const ring = new THREE.Shape();
+  ring.absarc(46, -46, 46, 0, Math.PI * 2, false);
+  const hole = new THREE.Path();
+  hole.absarc(46, -46, 24, 0, Math.PI * 2, true);
+  ring.holes.push(hole);
+
+  const r = new THREE.Shape();
+  r.moveTo(100, -26); r.lineTo(122, -26); r.lineTo(122, -36);
+  r.bezierCurveTo(127, -29, 135, -25, 144, -25);
+  r.lineTo(144, -47);
+  r.bezierCurveTo(130, -47, 122, -55, 122, -70);
+  r.lineTo(122, -92); r.lineTo(100, -92); r.closePath();
+  return [ring, r];
+}
 
 export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -22,17 +33,12 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
   camera.position.set(0, 0, 12);
 
   // geometry
-  const shapes = MARK_POINTS.map((pts) => {
-    const s = new THREE.Shape();
-    pts.forEach(([x, y], i) => (i ? s.lineTo(x, -y) : s.moveTo(x, -y)));
-    s.closePath();
-    return s;
-  });
+  const shapes = markShapes();
   const geo = new THREE.ExtrudeGeometry(shapes, {
-    depth: 22, bevelEnabled: true, bevelThickness: 1.6, bevelSize: 1.1, bevelSegments: 6, curveSegments: 4,
+    depth: 22, bevelEnabled: true, bevelThickness: 1.6, bevelSize: 1.1, bevelSegments: 6, curveSegments: 64,
   });
   geo.center();
-  geo.scale(0.05, 0.05, 0.05);
+  geo.scale(0.036, 0.036, 0.036);
 
   const mat = new THREE.MeshPhysicalMaterial({
     color: 0x0b0b0a, metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, reflectivity: 0.6,
@@ -55,8 +61,8 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
     camera.updateProjectionMatrix();
     const mobile = w < 900;
     // visible half-height at z=0 is ~3.2 units with fov 30 / distance 12
-    group.scale.setScalar(mobile ? 0.55 : 0.82);
-    group.position.set(mobile ? 0.55 : Math.min(2.1, camera.aspect * 1.2), mobile ? 1.25 : 0.3, 0);
+    group.scale.setScalar(mobile ? 0.44 : 0.7);
+    group.position.set(mobile ? 0.3 : Math.min(2.5, camera.aspect * 1.45), mobile ? 1.25 : 0.3, 0);
   };
   layout();
   new ResizeObserver(layout).observe(canvas);

@@ -1,10 +1,10 @@
 ---
-// Original geometric monogram. Replace the polygon with your own mark.
-// The same outline is extruded in 3D in src/scripts/mark3d.ts (MARK_POINTS).
+// Original "Or" monogram: a ring and a geometric r. The same outline is extruded in 3D in
+// src/scripts/mark3d.ts and traced by the page transition (Layout.astro) — keep the three in sync.
 interface Props { class?: string }
 const { class: cls } = Astro.props;
 ---
-<svg class={cls} viewBox="0 0 100 92" fill="currentColor" aria-hidden="true">
-  <polygon points="0,0 34,0 50,46 66,0 100,0 64,92 36,92" />
-  <polygon points="76,62 100,62 100,92 70,92" opacity="0.9" />
+<svg class={cls} viewBox="0 0 144 92" fill="currentColor" fill-rule="evenodd" aria-hidden="true">
+  <path d="M46 0A46 46 0 1 1 46 92A46 46 0 1 1 46 0ZM46 22A24 24 0 1 0 46 70A24 24 0 1 0 46 22Z" />
+  <path d="M100 26H122V36C127 29 135 25 144 25V47C130 47 122 55 122 70V92H100Z" />
 </svg>

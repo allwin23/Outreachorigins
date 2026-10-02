@@ -16,6 +16,7 @@ const { title = site.title, description = site.description } = Astro.props;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0e0e0d" />
     <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script is:inline>try { if (sessionStorage.getItem('ptrans') === '1') document.documentElement.classList.add('is-entering'); } catch (e) {}</script>
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link
@@ -95,9 +96,9 @@ const { title = site.title, description = site.description } = Astro.props;
     </footer>
 
     <div class="ptrans" id="ptrans" aria-hidden="true">
-      <svg viewBox="-4 -4 108 100" fill="none">
-        <path pathLength="1" d="M0 0H34L50 46L66 0H100L64 92H36Z" />
-        <path pathLength="1" d="M76 62H100V92H70Z" />
+      <svg viewBox="-4 -4 152 100" fill="none">
+        <path pathLength="1" d="M46 0A46 46 0 1 1 46 92A46 46 0 1 1 46 0ZM46 22A24 24 0 1 0 46 70A24 24 0 1 0 46 22Z" />
+        <path pathLength="1" d="M100 26H122V36C127 29 135 25 144 25V47C130 47 122 55 122 70V92H100Z" />
         <circle class="ptrans__spark" r="1.5" cx="0" cy="0" />
       </svg>
     </div>
