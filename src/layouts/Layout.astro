@@ -87,7 +87,6 @@ const { title = site.title, description = site.description } = Astro.props;
         <p>All rights reserved</p>
       </div>
       <div class="footer__wordmark" aria-hidden="true">
-        <Mark class="footer__logo fw-piece" />
         <span class="footer__giant">
           {site.name.split('').map((c) => <span class="fw-piece">{c}</span>)}
           <em>{site.nameAccent.split('').map((c) => <span class="fw-piece">{c}</span>)}</em>

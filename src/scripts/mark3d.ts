@@ -61,7 +61,7 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
     camera.updateProjectionMatrix();
     const mobile = w < 900;
     // visible half-height at z=0 is ~3.2 units with fov 30 / distance 12
-    group.scale.setScalar(mobile ? 0.44 : 0.7);
+    group.scale.setScalar(mobile ? 0.5 : 0.8);
     group.position.set(mobile ? 0.3 : Math.min(2.5, camera.aspect * 1.45), mobile ? 1.25 : 0.3, 0);
   };
   layout();

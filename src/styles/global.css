@@ -124,8 +124,8 @@ button { cursor: pointer; }
   padding: 1.1rem var(--pad);
   mix-blend-mode: difference; color: var(--ink);
 }
-.brand { display: flex; align-items: center; gap: 0.65rem; }
-.brand__mark { width: 35px; height: 22px; transition: transform 0.5s var(--ease-out); }
+.brand { display: flex; align-items: baseline; gap: 0.6rem; }
+.brand__mark { width: 24px; height: 15px; flex: none; transition: transform 0.5s var(--ease-out); }
 .brand:hover .brand__mark { transform: rotate(-12deg); }
 .brand__name { font-family: var(--font-grotesk); font-weight: 800; font-size: 1.05rem; letter-spacing: 0.01em; line-height: 1.6; }
 .brand__name em { font-family: var(--font-serif); font-weight: 700; }
@@ -485,9 +485,9 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
 .footer__legal { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
 .footer__legal a { transition: color 0.3s var(--ease-out); }
 .footer__legal a:hover { color: var(--ink-dim); }
-.footer__wordmark { display: flex; justify-content: center; align-items: flex-end; gap: 2vw; padding: 0 0 1.6vw; }
+.footer__wordmark { display: flex; justify-content: center; align-items: flex-end; gap: 2vw; padding: 2.4vw 0 1.6vw; }
 .footer__logo { width: 10.5vw; flex: none; margin-bottom: 1.1vw; }
-.footer__giant { display: flex; padding-bottom: 0.12em; margin-bottom: -0.12em; font-family: var(--font-grotesk); font-weight: 800; font-size: min(11vw, 250px); line-height: 0.82; letter-spacing: -0.03em; }
+.footer__giant { display: flex; padding-bottom: 0.12em; margin-bottom: -0.12em; font-family: var(--font-grotesk); font-weight: 800; font-size: min(13vw, 290px); line-height: 0.82; letter-spacing: -0.03em; }
 .footer__giant em { display: flex; font-family: var(--font-serif); font-weight: 700; letter-spacing: -0.01em; }
 .fw-piece { display: inline-block; will-change: transform; }
 
@@ -553,8 +553,7 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
   .footer__grid { grid-template-columns: 1fr 1fr; row-gap: 3rem; }
   .footer__brand { grid-column: 1 / -1; }
   .footer__meta { flex-direction: column; gap: 0.8rem; }
-  .footer__giant { font-size: 10.4vw; }
-  .footer__logo { width: 12vw; }
+  .footer__giant { font-size: 12.4vw; }
 }
 @media (max-width: 560px) {
   .cform { padding: 1.8rem 1.4rem; border-radius: 1.25rem; }
