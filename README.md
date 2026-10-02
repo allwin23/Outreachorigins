@@ -1,4 +1,4 @@
-# vamapoma portfolio
+# Outreachorigins portfolio
 
 Astro + Lenis + GSAP ScrollTrigger + Three.js.
 

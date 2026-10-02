@@ -1,9 +1,9 @@
 // All editable content lives here. Swap names, copy and media for your own.
 
 export const site = {
-  name: 'vamapo', // wordmark: first part upright…
-  nameAccent: 'ma', // …last part in italic serif
-  title: 'vamapoma — independent web design & development',
+  name: 'Outreach', // wordmark: first part upright…
+  nameAccent: 'origins', // …last part in italic serif
+  title: 'Outreachorigins — independent web design & development',
   description:
     'Independent studio for interface design and hand-built websites, crafted down to every interaction.',
   email: 'hello@example.com',
@@ -101,7 +101,7 @@ export const services = {
 export const about = {
   label: '(About)',
   title: 'A quick hello',
-  lead: 'vamapoma is an independent web design and development studio. I work with brands, founders and cultural projects who want a site that feels considered, fast and unmistakably theirs, from the first conversation to launch and beyond.',
+  lead: 'Outreachorigins is an independent web design and development studio. I work with brands, founders and cultural projects who want a site that feels considered, fast and unmistakably theirs, from the first conversation to launch and beyond.',
 };
 
 export const contact = {
@@ -128,7 +128,7 @@ export const projectsPage = {
 export const servicesPage = {
   label: '(The services)',
   title: ['Services', 'of the studio'],
-  place: 'vamapoma · Independent, remote-first',
+  place: 'Outreachorigins · Independent, remote-first',
   intro:
     'Five services, one person: the art direction, the interface and the code of a site live in the same hands, from the first call to launch.',
   principleLabel: '(The principle)',
@@ -145,7 +145,7 @@ export const servicesPage = {
   faqLabel: '(Questions)',
   faqTitle: 'Frequently asked questions about the services',
   faqLead:
-    'vamapoma is the independent web design and development studio of a single designer-developer. Five services, led by the same person from the first call to launch.',
+    'Outreachorigins is the independent web design and development studio of a single designer-developer. Five services, led by the same person from the first call to launch.',
   faq: [
     { q: 'Which services does the studio offer?', a: 'Five: art direction, UI/UX design, web development, motion design & WebGL, and bespoke websites. They can be booked together or one at a time.' },
     { q: 'Do you work from templates?', a: 'No. Every layout, component and animation is designed and built for the project, which keeps sites fast and unmistakably yours.' },
@@ -159,7 +159,7 @@ export const studioPage = {
   title: ['Independent', 'studio'],
   place: 'Remote-first · Since 2020 · UI/UX, motion & code',
   intro:
-    'vamapoma is the name of my studio. I work alone and directly with clients, from the first call to launch: art direction, UI/UX design and bespoke web development.',
+    'Outreachorigins is the name of my studio. I work alone and directly with clients, from the first call to launch: art direction, UI/UX design and bespoke web development.',
   beliefLabel: '(My conviction)',
   belief:
     'Good design is felt before it is noticed. It earns trust before a single word is read. That feeling is what I chase, project after project.',
@@ -170,7 +170,7 @@ export const studioPage = {
     { name: 'A single contact', text: 'From first sketch to launch you talk to the person who designs and builds. No project manager between your idea and its realisation.' },
     { name: 'Design survives production', text: 'I design and I develop. What you approve in the mock-up stays faithful once it is live, right down to details and interactions.' },
   ],
-  teamTitle: 'Behind vamapoma',
+  teamTitle: 'Behind Outreachorigins',
   teamTag: '(01) independent · several hats',
   teamLead: 'No team to coordinate: the three crafts of a website live in the same hands and answer each other at every step.',
   team: [
