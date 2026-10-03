@@ -85,8 +85,8 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
       baseY = 0.25;
     } else {
       group.scale.setScalar(1.05);
-      // Positioned close right after the end of Digital Studio headline without gap
-      baseX = Math.min(1.2, Math.max(0.3, camera.aspect * 0.45));
+      // Positioned right after Digital Studio text end with a razor-thin line gap (no overlap)
+      baseX = Math.min(2, Math.max(0.85, camera.aspect * 0.58));
       baseY = 0.35;
     }
     group.position.set(baseX, baseY, 0);
