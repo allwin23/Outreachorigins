@@ -207,7 +207,7 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
   color: var(--ink-dim); padding-left: 4vw; display: block;
 }
 .hero__aside { align-self: center; z-index: 3; position: relative; padding-bottom: 0; max-width: 21rem; justify-self: end; }
-.hero__desc { max-width: 24.5rem; font-size: 1rem; line-height: 1.65; color: var(--ink-dim); margin-top: 1.2rem; text-align: left; padding-left: 4vw; }
+.hero__desc { max-width: 24.5rem; font-size: 1rem; line-height: 1.65; color: var(--ink-dim); margin-top: 1.2rem; margin-left: 7.2vw; text-align: left; }
 .hero__index li { border-bottom: 1px solid var(--line); }
 .hero__index li:first-child { border-top: 1px solid var(--line); }
 .hero__index a {
