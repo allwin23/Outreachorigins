@@ -188,24 +188,25 @@ button { cursor: pointer; }
 .menu-open .mnav__foot { opacity: 1; transform: none; }
 
 /* ───────────────────────── hero ───────────────────────── */
-.hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; overflow: hidden; }
+.hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
 html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select: none; }
-.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
 .hero__inner {
-  position: relative; flex: 1; display: grid; grid-template-columns: 2.5fr 1fr; gap: 3rem;
-  align-items: end; padding: 0 var(--gutter) 2.9rem;
+  position: relative; z-index: 2; flex: 1; display: grid; grid-template-columns: 1.35fr 1fr; gap: 3.5rem;
+  align-items: center; justify-content: space-between;
+  padding: 6.5rem var(--gutter) 2.5rem; width: 100%; max-width: var(--content-max); margin: 0 auto;
 }
-.hero__title { align-self: end; padding-bottom: 5rem; }
+.hero__title { align-self: center; text-align: left; padding-bottom: 0; width: 100%; }
 .hero__line--grotesk {
-  font-family: var(--font-grotesk); font-weight: 800; font-size: min(13.5vw, 256px); line-height: 0.88;
-  letter-spacing: -0.02em; text-transform: uppercase;
+  font-family: var(--font-grotesk); font-weight: 800; font-size: min(11.5vw, 200px); line-height: 0.88;
+  letter-spacing: -0.02em; text-transform: uppercase; display: block;
 }
 .hero__line--serif {
-  font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: min(10.5vw, 199px); line-height: 1.1;
-  color: var(--ink-dim); padding-left: 12vw;
+  font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: min(9vw, 155px); line-height: 1.05;
+  color: var(--ink-dim); padding-left: 4vw; display: block;
 }
-.hero__aside { padding-bottom: 0; }
-.hero__desc { max-width: 18.5rem; font-size: 0.95rem; line-height: 1.6; color: var(--ink-dim); margin-bottom: 2rem; }
+.hero__aside { align-self: center; z-index: 3; position: relative; padding-bottom: 0; max-width: 21rem; justify-self: end; }
+.hero__desc { font-size: 0.98rem; line-height: 1.6; color: var(--ink-dim); margin-bottom: 2rem; }
 .hero__index li { border-bottom: 1px solid var(--line); }
 .hero__index li:first-child { border-top: 1px solid var(--line); }
 .hero__index a {
@@ -216,7 +217,7 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
 .hero__index a:hover { padding-left: 0.75rem; }
 .hero__index i { font-style: normal; font-family: var(--font-body); font-weight: 700; font-size: 0.7rem; color: var(--ink-faint); }
 
-.marquee { position: relative; border-top: 1px solid var(--line); padding: 1.1rem 0; overflow: hidden; }
+.marquee { position: relative; z-index: 2; border-top: 1px solid var(--line); padding: 1.1rem 0; overflow: hidden; }
 .marquee__track { display: flex; width: max-content; will-change: transform; }
 .marquee__track > span {
   padding-right: 6vw; opacity: 0.16; white-space: nowrap;
@@ -493,18 +494,19 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
 
 /* ───────────────────────── responsive ───────────────────────── */
 @media (max-width: 1100px) {
-  .hero__inner { grid-template-columns: 1.8fr 1fr; }
+  .hero__inner { grid-template-columns: 1.4fr 1fr; gap: 2rem; }
   .process-card__inner { grid-template-columns: 1fr 3fr; }
   .process-card[data-side='right'] .process-card__index { grid-column: 1; }
 }
 @media (max-width: 900px) {
   .nav__links, .nav .pill { display: none; }
   .nav__burger { display: block; }
-  .hero__inner { grid-template-columns: 1fr; align-content: end; gap: 2rem; padding-top: 7rem; }
-  .hero__title { padding-bottom: 0; }
-  .hero__line--grotesk { font-size: 15vw; }
-  .hero__line--serif { font-size: 12vw; padding-left: 5vw; }
-  .marquee__track > span { font-size: 16vw; }
+  .hero__inner { grid-template-columns: 1fr; align-content: center; align-items: center; gap: 2.5rem; padding: 7rem var(--gutter) 2.5rem; }
+  .hero__title { align-self: center; text-align: left; padding-bottom: 0; }
+  .hero__line--grotesk { font-size: 14vw; }
+  .hero__line--serif { font-size: 11vw; padding-left: 3vw; }
+  .hero__aside { align-self: center; justify-self: start; max-width: 100%; }
+  .marquee__track > span { font-size: 14vw; }
   .split { grid-template-columns: 1fr; row-gap: 2.5rem; padding-top: 6rem; padding-bottom: 6rem; }
   .split__label { position: static; }
   .manifesto__sticky { position: static; }

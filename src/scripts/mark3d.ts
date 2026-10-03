@@ -53,16 +53,26 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
   rim.position.set(-4, 3, 2);
   scene.add(rim);
 
-  // layout: large, right of centre, partly behind the headline
+  // layout: large, right of centre, vertically centered
+  let baseX = 0;
+  let baseY = 0;
   const layout = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     const mobile = w < 900;
-    // visible half-height at z=0 is ~3.2 units with fov 30 / distance 12
-    group.scale.setScalar(mobile ? 0.5 : 0.8);
-    group.position.set(mobile ? 0.3 : Math.min(2.5, camera.aspect * 1.45), mobile ? 1.25 : 0.3, 0);
+    if (mobile) {
+      group.scale.setScalar(0.52);
+      baseX = 0;
+      baseY = 0;
+    } else {
+      group.scale.setScalar(0.82);
+      // Visible horizontal center of right area at z=0 with fov 30, camera z=12
+      baseX = Math.min(3.0, Math.max(1.7, camera.aspect * 1.55));
+      baseY = 0;
+    }
+    group.position.set(baseX, baseY, 0);
   };
   layout();
   new ResizeObserver(layout).observe(canvas);
@@ -116,7 +126,11 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
     hover.y += (aim.y - hover.y) * Math.min(1, dt * 3);
     group.rotation.y = yaw + hover.x * 0.9 + scroll * 0.6;
     group.rotation.x += (hover.y * 0.25 + tilt + scroll * 0.25 - group.rotation.x) * Math.min(1, dt * 6);
-    group.position.y += reduced ? 0 : Math.sin(t * 0.6) * 0.0006;
+    
+    // Keep position pinned at baseX, baseY with gentle vertical oscillation float
+    const floatY = reduced ? 0 : Math.sin(t * 1.2) * 0.06;
+    group.position.set(baseX, baseY + floatY, 0);
+
     if (mat.opacity < 1) { mat.opacity = Math.min(1, mat.opacity + dt * 1.2 + 0.01); if (mat.opacity >= 1) mat.transparent = false; }
     renderer.render(scene, camera);
   };
