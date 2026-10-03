@@ -9,8 +9,8 @@ function markShapes() {
   hole.absarc(46, -46, 24, 0, Math.PI * 2, true);
   ring.holes.push(hole);
 
-  // r shape scaled 20% smaller (0.80) around its center
-  const cx = 112, cy = -58.5, scaleR = 0.80;
+  // r shape scaled 50% smaller (0.50) around its center
+  const cx = 112, cy = -58.5, scaleR = 0.50;
   const s = (x: number, y: number): [number, number] => [
     cx + (x - cx) * scaleR,
     cy + (y - cy) * scaleR,
@@ -70,7 +70,7 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
   rim.position.set(-4, 3, 2);
   scene.add(rim);
 
-  // layout: right of centre, slightly upper vertically centered
+  // layout: slightly left of previous right position, upper vertically centered
   let baseX = 0;
   let baseY = 0;
   const layout = () => {
@@ -85,8 +85,8 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
       baseY = 0.25;
     } else {
       group.scale.setScalar(1.10);
-      // Visible horizontal center of right area at z=0 with fov 30, camera z=12
-      baseX = Math.min(3.2, Math.max(1.8, camera.aspect * 1.55));
+      // Visible horizontal center shifted slightly left
+      baseX = Math.min(2.5, Math.max(1.3, camera.aspect * 1.25));
       baseY = 0.35;
     }
     group.position.set(baseX, baseY, 0);
