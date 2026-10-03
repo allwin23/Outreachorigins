@@ -196,7 +196,8 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
   align-items: center; justify-content: space-between;
   padding: 6.5rem var(--gutter) 2.5rem; width: 100%; max-width: var(--content-max); margin: 0 auto;
 }
-.hero__title { align-self: center; text-align: left; padding-bottom: 0; width: 100%; }
+.hero__left { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; text-align: left; width: 100%; }
+.hero__title { align-self: flex-start; text-align: left; padding-bottom: 0; width: 100%; }
 .hero__line--grotesk {
   font-family: var(--font-grotesk); font-weight: 800; font-size: min(11.5vw, 200px); line-height: 0.88;
   letter-spacing: -0.02em; text-transform: uppercase; display: block;
@@ -206,7 +207,7 @@ html.is-dragging, html.is-dragging * { cursor: grabbing !important; user-select:
   color: var(--ink-dim); padding-left: 4vw; display: block;
 }
 .hero__aside { align-self: center; z-index: 3; position: relative; padding-bottom: 0; max-width: 21rem; justify-self: end; }
-.hero__desc { font-size: 0.98rem; line-height: 1.6; color: var(--ink-dim); margin-bottom: 2rem; }
+.hero__desc { max-width: 24.5rem; font-size: 1rem; line-height: 1.65; color: var(--ink-dim); margin-top: 1.2rem; text-align: left; padding-left: 4vw; }
 .hero__index li { border-bottom: 1px solid var(--line); }
 .hero__index li:first-child { border-top: 1px solid var(--line); }
 .hero__index a {

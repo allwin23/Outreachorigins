@@ -134,7 +134,7 @@ addEventListener('pageshow', (e) => {
 
 /* ───────────── preloader + intro ───────────── */
 const preloader = $('#preloader');
-const seen = entering || (() => { try { return sessionStorage.getItem('intro-seen') === '1'; } catch { return false; } })();
+const seen = entering || reduced;
 
 gsap.set('.hero__title .line', { yPercent: 110 });
 gsap.set('[data-intro]', { y: 22, autoAlpha: 0 });
@@ -149,22 +149,29 @@ function intro() {
   return tl;
 }
 
-if (!preloader || seen || reduced) {
+if (!preloader || seen) {
   preloader?.remove();
   intro();
 } else {
   lenis.stop();
   const count = $('#preloader-count')!;
   const state = { v: 0 };
+  const markPaths = $$<SVGPathElement>('.preloader__mark path');
+  markPaths.forEach((path) => {
+    const len = path.getTotalLength();
+    gsap.set(path, { stroke: 'var(--ink)', strokeWidth: 1.5, strokeDasharray: len, strokeDashoffset: len, fillOpacity: 0 });
+  });
+
   gsap.timeline({
     onComplete() {
       preloader.remove();
       lenis.start();
-      try { sessionStorage.setItem('intro-seen', '1'); } catch {}
     },
   })
-    .to(state, { v: 100, duration: 1.9, ease: 'power2.inOut', onUpdate: () => (count.textContent = String(Math.round(state.v))) })
-    .to('.preloader__curtain', { scaleY: 1, duration: 0.6, ease: 'power3.inOut' }, '+=0.5')
+    .to(markPaths, { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut', stagger: 0.2 })
+    .to(markPaths, { fillOpacity: 1, duration: 0.4, ease: 'power1.out' }, '-=0.3')
+    .to(state, { v: 100, duration: 1.7, ease: 'power2.inOut', onUpdate: () => (count.textContent = String(Math.round(state.v))) }, 0)
+    .to('.preloader__curtain', { scaleY: 1, duration: 0.55, ease: 'power3.inOut' }, '+=0.2')
     .to(preloader, { autoAlpha: 0, duration: 0.35, ease: 'power1.out' })
     .add(intro(), '-=0.25');
 }

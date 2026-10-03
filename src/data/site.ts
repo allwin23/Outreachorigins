@@ -22,7 +22,7 @@ export const site = {
 };
 
 export const hero = {
-  top: 'Design',
+  top: 'Digital',
   bottom: 'Studio',
   intro:
     'An independent practice for interface design and web development. I shape the interface, then build it by hand, polished right down to the interactions.',

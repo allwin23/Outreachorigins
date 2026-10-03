@@ -9,12 +9,29 @@ function markShapes() {
   hole.absarc(46, -46, 24, 0, Math.PI * 2, true);
   ring.holes.push(hole);
 
+  // r shape scaled 20% smaller (0.80) around its center
+  const cx = 112, cy = -58.5, scaleR = 0.80;
+  const s = (x: number, y: number): [number, number] => [
+    cx + (x - cx) * scaleR,
+    cy + (y - cy) * scaleR,
+  ];
+
+  const p1 = s(100, -26), p2 = s(122, -26), p3 = s(122, -36);
+  const c1 = s(127, -29), c2 = s(135, -25), p4 = s(144, -25);
+  const p5 = s(144, -47);
+  const c3 = s(130, -47), c4 = s(122, -55), p6 = s(122, -70);
+  const p7 = s(122, -92), p8 = s(100, -92);
+
   const r = new THREE.Shape();
-  r.moveTo(100, -26); r.lineTo(122, -26); r.lineTo(122, -36);
-  r.bezierCurveTo(127, -29, 135, -25, 144, -25);
-  r.lineTo(144, -47);
-  r.bezierCurveTo(130, -47, 122, -55, 122, -70);
-  r.lineTo(122, -92); r.lineTo(100, -92); r.closePath();
+  r.moveTo(p1[0], p1[1]);
+  r.lineTo(p2[0], p2[1]);
+  r.lineTo(p3[0], p3[1]);
+  r.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], p4[0], p4[1]);
+  r.lineTo(p5[0], p5[1]);
+  r.bezierCurveTo(c3[0], c3[1], c4[0], c4[1], p6[0], p6[1]);
+  r.lineTo(p7[0], p7[1]);
+  r.lineTo(p8[0], p8[1]);
+  r.closePath();
   return [ring, r];
 }
 
@@ -35,7 +52,7 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
   // geometry
   const shapes = markShapes();
   const geo = new THREE.ExtrudeGeometry(shapes, {
-    depth: 22, bevelEnabled: true, bevelThickness: 1.6, bevelSize: 1.1, bevelSegments: 6, curveSegments: 64,
+    depth: 12, bevelEnabled: true, bevelThickness: 1.0, bevelSize: 0.7, bevelSegments: 6, curveSegments: 64,
   });
   geo.center();
   geo.scale(0.036, 0.036, 0.036);
@@ -53,7 +70,7 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
   rim.position.set(-4, 3, 2);
   scene.add(rim);
 
-  // layout: large, right of centre, vertically centered
+  // layout: right of centre, slightly upper vertically centered
   let baseX = 0;
   let baseY = 0;
   const layout = () => {
@@ -63,14 +80,14 @@ export function initMark3D(canvas: HTMLCanvasElement, { reduced = false } = {}) 
     camera.updateProjectionMatrix();
     const mobile = w < 900;
     if (mobile) {
-      group.scale.setScalar(0.52);
+      group.scale.setScalar(0.68);
       baseX = 0;
-      baseY = 0;
+      baseY = 0.25;
     } else {
-      group.scale.setScalar(0.82);
+      group.scale.setScalar(1.10);
       // Visible horizontal center of right area at z=0 with fov 30, camera z=12
-      baseX = Math.min(3.0, Math.max(1.7, camera.aspect * 1.55));
-      baseY = 0;
+      baseX = Math.min(3.2, Math.max(1.8, camera.aspect * 1.55));
+      baseY = 0.35;
     }
     group.position.set(baseX, baseY, 0);
   };
