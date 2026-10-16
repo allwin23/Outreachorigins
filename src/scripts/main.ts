@@ -142,7 +142,8 @@ gsap.set('#nav', { y: -16, autoAlpha: 0 });
 
 function intro() {
   const tl = gsap.timeline({ defaults: { ease: EASE } });
-  tl.to('.hero__title .line', { yPercent: 0, duration: 1.4, stagger: 0.12 })
+  tl.fromTo('.hero__art', { autoAlpha: 0, scale: 0.94, y: 24 }, { autoAlpha: 0.92, scale: 1, y: 0, duration: 1.7, ease: 'power3.out' }, 0.1)
+    .to('.hero__title .line', { yPercent: 0, duration: 1.4, stagger: 0.12 }, 0)
     .to('#nav', { y: 0, autoAlpha: 1, duration: 1.1 }, 0.2)
     .to('[data-intro]', { y: 0, autoAlpha: 1, duration: 1.1, stagger: 0.07 }, 0.3)
     .from('.marquee', { autoAlpha: 0, duration: 1.2 }, 0.4);
@@ -176,16 +177,13 @@ if (!preloader || seen) {
     .add(intro(), '-=0.25');
 }
 
-/* ───────────── hero 3D mark (lazy) ───────────── */
-const canvas = $<HTMLCanvasElement>('#hero-canvas');
-if (canvas) {
-  const load = () => import('./mark3d').then((m) => m.initMark3D(canvas, { reduced }));
-  'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 1200 }) : setTimeout(load, 300);
-}
-
 /* ───────────── hero parallax out ───────────── */
 gsap.to('.hero__inner', {
   y: () => innerHeight * -0.102, autoAlpha: 0.25, ease: 'none',
+  scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+});
+gsap.to('.hero__art', {
+  y: () => innerHeight * -0.055, rotation: 1.5, ease: 'none',
   scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
 });
 
