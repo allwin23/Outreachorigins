@@ -4,6 +4,7 @@ import '../styles/pages.css';
 import Mark from '../components/Mark.astro';
 import Wordmark from '../components/Wordmark.astro';
 import { site } from '../data/site';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props { title?: string; description?: string }
 const { title = site.title, description = site.description } = Astro.props;
@@ -15,6 +16,7 @@ const { title = site.title, description = site.description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0e0e0d" />
+    <Analytics />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script is:inline>try { if (sessionStorage.getItem('ptrans') === '1') document.documentElement.classList.add('is-entering'); } catch (e) {}</script>
